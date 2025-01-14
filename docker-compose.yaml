@@ -1,0 +1,17 @@
+
+
+services:
+  samba:
+    image: dperson/samba
+    container_name: samba
+    ports:
+      - "139:139"
+      - "445:445"
+    volumes:
+      - C:/Samba/share:/samba/share
+      - ./smb.conf:/etc/samba/smb.conf
+    environment:
+      - USERID=1000
+      - GROUPID=1000
+      - SHARES=shared;/samba/share;yes;no;no;all;none
+    restart: unless-stopped

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration strict="true" status="INFO" monitorInterval="60">
+
+	<Appenders>
+		<RollingFile name="rollingFile_warn"
+			fileName="logs/warn.log"
+			filePattern="logs/warn/warn_%d{yyyy-MM-dd}-%i.log.gz"
+			ignoreExceptions="false">
+			<PatternLayout>
+				<Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<OnStartupTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="20 MB" />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+			<DefaultRolloverStrategy fileIndex="nomax">
+				<Delete basePath="logs/warn/" maxDepth="1">
+					<IfFileName glob="*.log.gz">
+						<IfAccumulatedFileSize exceeds="100 MB" />
+					</IfFileName>
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+
+		<RollingFile name="rollingFile_info"
+			fileName="logs/info.log"
+			filePattern="logs/info/info_%d{yyyy-MM-dd}-%i.log.gz"
+			ignoreExceptions="false">
+			<PatternLayout>
+				<Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<OnStartupTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="20 MB" />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+			<DefaultRolloverStrategy fileIndex="nomax">
+				<Delete basePath="logs/info/" maxDepth="1">
+					<IfFileName glob="*.log.gz">
+						<IfAccumulatedFileSize exceeds="300 MB" />
+					</IfFileName>
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+
+		<RollingFile name="rollingFile_ecs_json_info"
+			fileName="logs/ecs_json_info.log"
+			filePattern="logs/ecs_json_info/ecs_json_info_%d{yyyy-MM-dd}-%i.log.gz"
+			ignoreExceptions="false">
+			<EcsLayout serviceName="int001-samba-test"
+				eventDataset="application.info" includeOrigin="true">
+			</EcsLayout>
+			<Policies>
+				<OnStartupTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="20 MB" />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+			<DefaultRolloverStrategy fileIndex="nomax">
+				<Delete basePath="logs/ecs_json_info/" maxDepth="1">
+					<IfFileName glob="*.log.gz">
+						<IfAccumulatedFileSize exceeds="50 MB" />
+					</IfFileName>
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+
+		<RollingFile name="rollingFile_debug"
+			fileName="logs/debug.log"
+			filePattern="logs/debug/debug_%d{yyyy-MM-dd}-%i.log.gz"
+			ignoreExceptions="false">
+			<PatternLayout>
+				<Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<OnStartupTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="20 MB" />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+			<DefaultRolloverStrategy fileIndex="nomax">
+				<Delete basePath="logs/debug/" maxDepth="1">
+					<IfFileName glob="*.log.gz">
+						<IfAccumulatedFileSize exceeds="300 MB" />
+					</IfFileName>
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+
+		<RollingFile name="rollingFile_trace"
+			fileName="logs/trace.log"
+			filePattern="logs/trace/trace_%d{yyyy-MM-dd}-%i.log.gz"
+			ignoreExceptions="false">
+			<PatternLayout>
+				<Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<OnStartupTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="20 MB" />
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+			<DefaultRolloverStrategy fileIndex="nomax">
+				<Delete basePath="logs/trace/" maxDepth="1">
+					<IfFileName glob="*.log.gz">
+						<IfAccumulatedFileSize exceeds="300 MB" />
+					</IfFileName>
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingFile>
+
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d %-5p %c (%F:%L) - %m%n" />
+		</Console>
+
+	</Appenders>
+
+	<Loggers>
+
+		<Logger name="se.repltyo.camel" level="trace" />
+
+		<Root level="info">
+			<AppenderRef ref="rollingFile_warn" level="warn" />
+			<AppenderRef ref="rollingFile_info" level="info" />
+			<AppenderRef ref="rollingFile_ecs_json_info" level="info" />
+			<AppenderRef ref="rollingFile_debug" level="debug" />
+			<AppenderRef ref="rollingFile_trace" level="trace" />
+ 			<AppenderRef ref="STDOUT" level="info" />
+		</Root>
+
+	</Loggers>
+
+</Configuration>

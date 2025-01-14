@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration strict="true" status="INFO" monitorInterval="60">
+
+	<Appenders>
+
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d %-5p %c (%F:%L) - %m%n" />
+		</Console>
+
+	</Appenders>
+
+	<Loggers>
+
+		<Logger name="se.replyto.camel" level="trace" />
+
+		<Root level="info">
+ 			<AppenderRef ref="STDOUT" level="info" />
+		</Root>
+
+	</Loggers>
+
+</Configuration>

@@ -1,0 +1,10 @@
+/target
+.project
+.settings
+.svn
+.classpath
+/logs
+.mvn
+.factorypath
+.sts4-cache
+/bin
