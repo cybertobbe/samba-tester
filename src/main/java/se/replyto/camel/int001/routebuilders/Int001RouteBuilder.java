@@ -35,8 +35,7 @@ public class Int001RouteBuilder extends RouteBuilder {
 
 			// Send message to Samba shared folder
 			.to("{{int001.samba.endpoint-uri}}")
-			.log(LoggingLevel.INFO, loggerId, "File sent to Samba share: ${headers.CamelFileName}")
-			.bean(TxLog.class, "info('INT001B." + loggerId + ".OUT', 'Sent file to Samba share')");
+			.log(LoggingLevel.INFO, loggerId, "File sent to Samba share: ${headers.CamelFileName}");
 
 			// Handle errors
 		    from("direct:error-handler")
