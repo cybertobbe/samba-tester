@@ -24,30 +24,25 @@ public class Int001RouteBuilder extends RouteBuilder {
 	    
 	    errorHandler(noErrorHandler());
 
-	    // Main route
-	    from("{{int001.inbound.endpoint-uri}}")
-			.routeId("int001-samba-test-main-route")
-			.errorHandler(deadLetterChannelBuilder)
-			
-			// Message received from inbound endpoint
-			.bean(TxLog.class, "info('INT001A." + loggerId + ".IN', 'Received message, exchangeId: ${exchangeId}')")
-			.log(LoggingLevel.INFO, loggerId, "Incoming headers: ${headers}")
-			.log(LoggingLevel.INFO, loggerId, "Incoming body: ${body}")
+		    /// Main route
+		    from("{{int001.inbound.endpoint-uri}}")
+		    .routeId("int001-samba-test-main-route")
+		    .errorHandler(deadLetterChannel("direct:error-handler")
+		        .maximumRedeliveries(3)
+		        .redeliveryDelay(1000))
+		    .log(LoggingLevel.INFO, "Incoming headers: ${headers}")
+		    .log(LoggingLevel.INFO, "Incoming body: ${body}")
 
-			// Send message to outbound endpoint
-			.to("{{int001.outbound.endpoint-uri}}")
-			.log(LoggingLevel.INFO, loggerId, "Outgoing headers: ${headers}")
-			.bean(TxLog.class, "info('INT001B." + loggerId + ".OUT', 'Sent message to destination')")
-			.log(LoggingLevel.INFO, loggerId, "Message body: ${body}");
+			// Send message to Samba shared folder
+			.to("{{int001.samba.endpoint-uri}}")
+			.log(LoggingLevel.INFO, loggerId, "File sent to Samba share: ${headers.CamelFileName}")
+			.bean(TxLog.class, "info('INT001B." + loggerId + ".OUT', 'Sent file to Samba share')");
 
-		// Handle errors
-	    from("direct:error-handler")
-			.routeId("int001-samba-test-error-handler-route")
-			.bean(TxLog.class, "errorEx('INT001A." + loggerId + ".ERROR')")
-
-			// Send original file to backout folder
-			.to("{{int001.backout.endpoint-uri}}")
-			.bean(TxLog.class, "info('INT001A." + loggerId + ".BACKOUT', 'Backed out message')");
+			// Handle errors
+		    from("direct:error-handler")
+		    .routeId("error-handler-route")
+		    .log(LoggingLevel.ERROR, "Error processing message: ${exception.message}")
+		    .to("{{int001.backout.endpoint-uri}}");
 	}
 
 }

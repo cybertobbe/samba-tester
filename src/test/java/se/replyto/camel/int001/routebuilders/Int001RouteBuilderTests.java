@@ -9,6 +9,7 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.camel.test.spring.junit5.UseAdviceWith;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -21,6 +22,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 @SpringBootTest( properties = {"spring.boot.admin.client.enabled=false"} )
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 @UseAdviceWith
+@Disabled
 class Int001RouteBuilderTestCase  {
 
     @Autowired

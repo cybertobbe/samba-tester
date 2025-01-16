@@ -6,12 +6,28 @@ services:
     container_name: samba
     ports:
       - "139:139"
-      - "445:445"
+      - "1445:445"
+    networks:
+      - samba-network
     volumes:
-      - C:/Samba/share:/samba/share
+      - C:\Users\cyber\Samba:/samba/share
       - ./smb.conf:/etc/samba/smb.conf
     environment:
       - USERID=1000
       - GROUPID=1000
       - SHARES=shared;/samba/share;yes;no;no;all;none
     restart: unless-stopped
+    command: >
+      sh -c "
+      if ! id sambauser >/dev/null 2>&1; then
+        adduser -D -H -G users -s /bin/false sambauser &&
+        echo 'sambauser:password' | chpasswd &&
+        (echo 'password'; echo 'password') | smbpasswd -a -s sambauser
+      fi &&
+      smbd --foreground --no-process-group
+      "
+
+networks:
+  samba-network:
+    driver: bridge
+  
