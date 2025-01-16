@@ -8,4 +8,6 @@
 .factorypath
 .sts4-cache
 /bin
+error/*
+files/*
 .camel/
