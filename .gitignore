@@ -8,6 +8,7 @@
 .factorypath
 .sts4-cache
 /bin
-error/*
+errors/*
 files/*
 .camel/
+.idea/

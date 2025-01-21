@@ -10,7 +10,9 @@ services:
     networks:
       - samba-network
     volumes:
-      - C:\Users\cyber\Samba:/samba/share
+      - C:\Users\cyber\Samba\share:/samba/share
+      - C:\Users\cyber\Samba\source:/samba/source
+      - C:\Users\cyber\Samba\destination:/samba/destination
       - ./smb.conf:/etc/samba/smb.conf
     environment:
       - USERID=1000
@@ -26,7 +28,16 @@ services:
       fi &&
       smbd --foreground --no-process-group
       "
+  activemq:
+    image: apache/activemq-classic:latest
+    container_name: activemq_samba
+    ports:
+      - "8161:8161"
+      - "62616:61616"
+    networks:
+      - samba-network
 
+    restart: "always"
 networks:
   samba-network:
     driver: bridge

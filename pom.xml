@@ -23,18 +23,29 @@
 		<dependency>
     		<groupId>org.apache.camel</groupId>
     		<artifactId>camel-core</artifactId>
-    	<version>4.9.0</version>
-	</dependency>
+    	</dependency>
 	<dependency>
     	<groupId>org.apache.camel.springboot</groupId>
     	<artifactId>camel-spring-boot-starter</artifactId>
-    	<version>4.9.0</version>
-	</dependency>
+    	</dependency>
 	<dependency>
     	<groupId>org.apache.camel</groupId>
     	<artifactId>camel-smb</artifactId>
-    	<version>4.9.0</version>
+    	</dependency>
+	<dependency>
+    	<groupId>org.apache.camel</groupId>
+    	<artifactId>camel-activemq</artifactId>
 	</dependency>
+	<dependency>
+  		<groupId>org.apache.camel.springboot</groupId>
+  		<artifactId>camel-smb-starter</artifactId>
+  		</dependency>
+  		<dependency>
+    		<groupId>com.hierynomus</groupId>
+    		<artifactId>smbj</artifactId>
+    		<version>0.14.0</version>
+		</dependency>
+
 </dependencies>
 
 	<build>
