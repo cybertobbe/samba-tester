@@ -246,7 +246,7 @@ public class TxLog {
 	}
 
 	private void sendToQueue(String xml) {
-		String brokerUrl = "tcp://activemq:61616";
+		String brokerUrl = "tcp://localhost:61616";
 		String queueName = "SAMBA";
 
 //		System.out.println("sendToQueue: Broker URL is " + brokerUrl);
