@@ -12,9 +12,14 @@ import org.apache.camel.model.errorhandler.DefaultErrorHandlerDefinition;
 import org.apache.camel.spi.TypeConvertible;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-
+import com.hierynomus.smbj.SMBClient;
+import com.hierynomus.smbj.auth.AuthenticationContext;
+import com.hierynomus.smbj.connection.Connection;
+import com.hierynomus.smbj.session.Session;
+import com.hierynomus.smbj.share.DiskShare;
 import com.hierynomus.smbj.share.File;
 
 import se.replyto.camel.int001.TxLog;
@@ -27,6 +32,8 @@ public class Int001RouteBuilder extends RouteBuilder {
 	private static final Logger log = LoggerFactory.getLogger(Int001RouteBuilder.class);
 	String loggerId = getClass().getSimpleName();
 
+	
+	
 	@Override
 	public void configure() {
 		
@@ -41,44 +48,49 @@ public class Int001RouteBuilder extends RouteBuilder {
 	    
 	    errorHandler(deadLetterChannelBuilder);
 
-		    /// Main route
-		    from("{{svc037.readsoftonline.inbound.fileparams}}")
+		    // Main route
+		    from("{{int001.inbound.files-uri}}")
 		    
 		    .to("log:DEBUG-1?showAll=true")
 		    .routeId("int001-samba-test-main-route")
-		    .log(LoggingLevel.INFO, loggerId, "Starting to process files from SMB share: {{svc037.readsoftonline.inbound.fileparams}}") 
+		    .log(LoggingLevel.INFO, loggerId, "Starting to process files from SMB share: {{int001.inbound.files-uri}}") 
 		    .log(LoggingLevel.INFO, "Incoming headers: ${headers}")
 		    .setBody(exchange -> {
+		    	//exchange.getIn().setHeader(Exchange.FILE_NAME, "test.txt");
                 File smbFile = exchange.getIn().getBody(File.class);
              
                 String fileName = smbFile.getFileName(); 
                 String simpleFileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
-                exchange.getIn().setHeader("CamelFileName", simpleFileName);
+                exchange.getIn().setHeader(Exchange.FILE_NAME, simpleFileName);
+                
+                log.info("Checking if file '{}' exists in the destination folder", simpleFileName);
+
+                
                 try (InputStream inputStream = smbFile.getInputStream()) {
                     return inputStream.readAllBytes();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                
             })
+		    
 			// Send message to Samba shared folder
 		    .to("log:DEBUG-2?showAll=true")
 			.to("{{int001.samba.endpoint-uri}}")
 			.bean(TxLog.class, "info('INT001B." + loggerId + ".OUT', 'Sent file to Samba share')");
+		    	
 		    
+			
 		    
 			// Handle errors
 		    from("direct:error-handler")
 		    .routeId("error-handler-route")
-		    .setHeader("CamelFileName", simple("${headers.CamelFileName}"))
+		    .setHeader(Exchange.FILE_NAME, simple("${headers.CamelFileName}"))
 		    .log(LoggingLevel.ERROR, "Error processing file: ${headers.CamelFileName}")
 		    .log(LoggingLevel.ERROR, "Error processing message: ${exception.message}")
 		    .log(LoggingLevel.ERROR, "Stack trace: ${exception.stacktrace}")
 		    .to("{{int001.backout.endpoint-uri}}")
 		    .log(LoggingLevel.INFO, "File backedout");
 	}
-	
-
-	
-		
 	
 }
