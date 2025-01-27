@@ -37,7 +37,7 @@ public class Int001RouteBuilder extends RouteBuilder {
 	@Override
 	public void configure() {
 		
-		getCamelContext().getTypeConverterRegistry().addTypeConverters(new SmbFileConverter());
+		//getCamelContext().getTypeConverterRegistry().addTypeConverters(new SmbFileConverter());
 
 		// Create error handler
 	    final DefaultErrorHandlerDefinition deadLetterChannelBuilder =
@@ -48,23 +48,25 @@ public class Int001RouteBuilder extends RouteBuilder {
 	    
 	    errorHandler(deadLetterChannelBuilder);
 
-		    // Main route
-		    from("{{int001.inbound.files-uri}}")
-		    
+		  // Main route
+		  from("{{int001.inbound.files-uri}}")
+	    	.log(LoggingLevel.INFO, loggerId, "Quartz start, polling...")
 		    .to("log:DEBUG-1?showAll=true")
 		    .routeId("int001-samba-test-main-route")
+		    
 		    .log(LoggingLevel.INFO, loggerId, "Starting to process files from SMB share: {{int001.inbound.files-uri}}") 
 		    .log(LoggingLevel.INFO, "Incoming headers: ${headers}")
 		    .setBody(exchange -> {
-		    	//exchange.getIn().setHeader(Exchange.FILE_NAME, "test.txt");
+		    	
                 File smbFile = exchange.getIn().getBody(File.class);
              
-                String fileName = smbFile.getFileName(); 
+                String fileName = smbFile.getPath(); 
                 String simpleFileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
-                exchange.getIn().setHeader(Exchange.FILE_NAME, simpleFileName);
+                exchange.getIn().setHeader("CamelFileName", simpleFileName);
                 
                 log.info("Checking if file '{}' exists in the destination folder", simpleFileName);
-
+                
+                
                 
                 try (InputStream inputStream = smbFile.getInputStream()) {
                     return inputStream.readAllBytes();
@@ -85,7 +87,7 @@ public class Int001RouteBuilder extends RouteBuilder {
 			// Handle errors
 		    from("direct:error-handler")
 		    .routeId("error-handler-route")
-		    .setHeader(Exchange.FILE_NAME, simple("${headers.CamelFileName}"))
+		    .setHeader("CamelFileName", simple("${headers.CamelFileName}"))
 		    .log(LoggingLevel.ERROR, "Error processing file: ${headers.CamelFileName}")
 		    .log(LoggingLevel.ERROR, "Error processing message: ${exception.message}")
 		    .log(LoggingLevel.ERROR, "Stack trace: ${exception.stacktrace}")
