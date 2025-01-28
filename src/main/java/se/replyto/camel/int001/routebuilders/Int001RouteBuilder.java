@@ -40,7 +40,7 @@ public class Int001RouteBuilder extends RouteBuilder {
 	@Override
 	public void configure() {
 		
-		//getCamelContext().getTypeConverterRegistry().addTypeConverters(new SmbFileConverter());
+		
 
 		// Create error handler
 	    final DefaultErrorHandlerDefinition deadLetterChannelBuilder =
