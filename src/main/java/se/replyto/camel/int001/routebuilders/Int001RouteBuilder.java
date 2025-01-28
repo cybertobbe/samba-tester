@@ -7,7 +7,9 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
+import org.apache.camel.Producer;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.smb.SmbProducer;
 import org.apache.camel.model.errorhandler.DefaultErrorHandlerDefinition;
 import org.apache.camel.spi.TypeConvertible;
 import org.slf4j.Logger;
@@ -24,6 +26,7 @@ import com.hierynomus.smbj.share.File;
 
 import se.replyto.camel.int001.TxLog;
 import se.replyto.camel.int001.converter.SmbFileConverter;
+import se.replyto.camel.int001.utils.FileDeletion;
 
 
 @Component
@@ -56,10 +59,15 @@ public class Int001RouteBuilder extends RouteBuilder {
 		    
 		    .log(LoggingLevel.INFO, loggerId, "Starting to process files from SMB share: {{int001.inbound.files-uri}}") 
 		    .log(LoggingLevel.INFO, "Incoming headers: ${headers}")
+		    
+		    
 		    .setBody(exchange -> {
 		    	
+		    	
+		    	
                 File smbFile = exchange.getIn().getBody(File.class);
-             
+                exchange.setProperty("originalFile", smbFile);
+                
                 String fileName = smbFile.getPath(); 
                 String simpleFileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
                 exchange.getIn().setHeader("CamelFileName", simpleFileName);
@@ -76,9 +84,11 @@ public class Int001RouteBuilder extends RouteBuilder {
                 
             })
 		    
+
 			// Send message to Samba shared folder
 		    .to("log:DEBUG-2?showAll=true")
 			.to("{{int001.samba.endpoint-uri}}")
+			.process(new FileDeletion())
 			.bean(TxLog.class, "info('INT001B." + loggerId + ".OUT', 'Sent file to Samba share')");
 		    	
 		    

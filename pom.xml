@@ -15,7 +15,7 @@
 	<name>int001-samba-test</name>
 
 	<properties>
-		<camel.version>4.8.1</camel.version>
+		<camel.version>4.8.2</camel.version>
 	</properties>
 	<dependencies>
 		<dependency>
