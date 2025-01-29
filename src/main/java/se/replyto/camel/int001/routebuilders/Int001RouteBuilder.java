@@ -72,7 +72,7 @@ public class Int001RouteBuilder extends RouteBuilder {
                 String simpleFileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
                 exchange.getIn().setHeader("CamelFileName", simpleFileName);
                 
-                log.info("Checking if file '{}' exists in the destination folder", simpleFileName);
+                log.info("Checking if file exists in the destination folder", simpleFileName);
                 
                 
                 
@@ -83,8 +83,9 @@ public class Int001RouteBuilder extends RouteBuilder {
                 }
                 
             })
+		    .filter(simple("${header.CamelFileName} regex '^.*\\.txt$'")) 
 		    
-
+		    
 			// Send message to Samba shared folder
 		    .to("log:DEBUG-2?showAll=true")
 			.to("{{int001.samba.endpoint-uri}}")
