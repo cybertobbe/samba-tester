@@ -1,0 +1,47 @@
+{"properties": [
+  {
+    "name": "samba.server.address",
+    "type": "java.lang.String",
+    "description": "A description for 'samba.server.address'"
+  },
+  {
+    "name": "int001.inbound.files-uri",
+    "type": "java.lang.String",
+    "description": "A description for 'int001.inbound.files-uri'"
+  },
+  {
+    "name": "int001.samba.endpoint-uri",
+    "type": "java.lang.String",
+    "description": "A description for 'int001.samba.endpoint-uri'"
+  },
+  {
+    "name": "int001.backout.endpoint-uri",
+    "type": "java.lang.String",
+    "description": "A description for 'int001.backout.endpoint-uri'"
+  },
+  {
+    "name": "baseline.integration-id",
+    "type": "java.lang.String",
+    "description": "A description for 'baseline.integration-id'"
+  },
+  {
+    "name": "management.endpoint.env.post.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'management.endpoint.env.post.enabled'"
+  },
+  {
+    "name": "management.metrics.export.otlp.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'management.metrics.export.otlp.enabled'"
+  },
+  {
+    "name": "org.quartz.scheduler.jmx.export",
+    "type": "java.lang.String",
+    "description": "A description for 'org.quartz.scheduler.jmx.export'"
+  },
+  {
+    "name": "endpoints.jolokia.sensitive",
+    "type": "java.lang.String",
+    "description": "A description for 'endpoints.jolokia.sensitive'"
+  }
+]}

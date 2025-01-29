@@ -1,9 +1,10 @@
-//package se.replyto.camel.int001.config;
-//
-//
-//
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
+package se.replyto.camel.int001.config;
+
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 //
 //import com.hierynomus.smbj.SMBClient;
 //import com.hierynomus.smbj.auth.AuthenticationContext;
@@ -23,3 +24,22 @@
 //	    }
 //	}
 
+
+@Configuration
+public class SmbConfig{
+	
+
+    @Bean
+    String setSambaServerAddress() {
+        try {
+            String hostIp = InetAddress.getLocalHost().getHostAddress();
+            System.setProperty("samba.server.address", hostIp + ":1445");
+            return hostIp;
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return "Unknown host";
+        }
+		
+		
+    }
+}
