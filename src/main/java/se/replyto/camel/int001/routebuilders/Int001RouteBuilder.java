@@ -3,29 +3,19 @@ package se.replyto.camel.int001.routebuilders;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.camel.CamelContext;
-import org.apache.camel.Converter;
-import org.apache.camel.Exchange;
+
 import org.apache.camel.LoggingLevel;
-import org.apache.camel.Producer;
+
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.smb.SmbProducer;
+
 import org.apache.camel.model.errorhandler.DefaultErrorHandlerDefinition;
-import org.apache.camel.spi.TypeConvertible;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.hierynomus.smbj.SMBClient;
-import com.hierynomus.smbj.auth.AuthenticationContext;
-import com.hierynomus.smbj.connection.Connection;
-import com.hierynomus.smbj.session.Session;
-import com.hierynomus.smbj.share.DiskShare;
 import com.hierynomus.smbj.share.File;
-
 import se.replyto.camel.int001.TxLog;
-import se.replyto.camel.int001.converter.SmbFileConverter;
 import se.replyto.camel.int001.utils.FileDeletion;
 
 
@@ -50,6 +40,8 @@ public class Int001RouteBuilder extends RouteBuilder {
 		          .redeliveryDelay(1000);
 	    
 	    errorHandler(deadLetterChannelBuilder);
+	    
+	    
 
 		  // Main route
 		  from("{{int001.inbound.files-uri}}")
@@ -83,8 +75,9 @@ public class Int001RouteBuilder extends RouteBuilder {
                 }
                 
             })
-		    .filter(simple("${header.CamelFileName} regex '^.*\\.txt$'")) 
 		    
+		    //.filter(simple("${header.CamelFileName} regex '^.*\\.txt$'")) 
+		    .filter(header("CamelFileName").regex(".*\\.(txt|xml)$"))
 		    
 			// Send message to Samba shared folder
 		    .to("log:DEBUG-2?showAll=true")
@@ -104,6 +97,8 @@ public class Int001RouteBuilder extends RouteBuilder {
 		    .log(LoggingLevel.ERROR, "Stack trace: ${exception.stacktrace}")
 		    .to("{{int001.backout.endpoint-uri}}")
 		    .log(LoggingLevel.INFO, "File backedout");
-	}
+	        
+	    }
 	
-}
+	
+	}
