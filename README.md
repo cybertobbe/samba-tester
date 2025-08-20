@@ -4,4 +4,5 @@ Integration int001-samba-test is a test setup for Apache Camels SMB component.
 
 ## Description
 ​
-A Samba server is setup in Docker for testing the SMB componnent in various Apache Camel versions. 
+This is a project in collaboration with ReplyTo AB. Where I tested the SMB component. 
+A Samba server runs in Docker and the component is tested by sending messages to and from server with different query parameters.  
